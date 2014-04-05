@@ -44,6 +44,8 @@ import os
 import sys
 import yaml
 
+from catkin.find_in_workspaces import find_in_workspaces
+
 import rospkg
 import genmsg
 
@@ -534,9 +536,15 @@ def iterate_packages(rospack, mode):
 
     pkgs = rospack.list()
     for p in pkgs:
-        d = os.path.join(rospack.get_path(p), subdir)
+        path = rospack.get_path(p)
+        d = os.path.join(path, subdir)
         if os.path.isdir(d):
             yield p, d
+        results = find_in_workspaces(search_dirs=['share'], project=p, first_match_only=True)
+        if results and results[0] != path:
+            d = os.path.join(results[0], subdir)
+            if os.path.isdir(d):
+                yield p, d
     
 def rosmsg_search(rospack, mode, base_type):
     """
