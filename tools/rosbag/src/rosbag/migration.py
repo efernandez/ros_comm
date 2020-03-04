@@ -558,6 +558,8 @@ class MessageMigrator(object):
                             rule_dicts.append((scratch_locals, r))
                         except ImportError:
                             print("Cannot load rule file [%s] in package [%s]" % (r, pkg), file=sys.stderr)
+                        except TabError as e:
+                            print("Cannot load rule file [%s] in package [%s] because of tab error: %s" % (r, pkg, e), file=sys.stderr)
 
 
         for (rule_dict, location_base) in rule_dicts:
